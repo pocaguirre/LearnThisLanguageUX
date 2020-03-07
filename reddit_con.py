@@ -18,7 +18,7 @@ def get_comment(id=None, url=None):
         comment = reddit.comment(id=id)
     else:
         comment = reddit.comment(url=url)
-    trans_obj = {'translated': {}, 'parent': {},'request': {}}
+    trans_obj = {'translated': {}, 'parent': {},'request': {}, 'footer': {}}
 
     trans_obj['translated']['body'] = comment.body_html
     trans_obj['translated']['points'] = comment.score
@@ -42,13 +42,17 @@ def get_comment(id=None, url=None):
         trans_obj['parent']['time'] = dt.duration(datetime.fromtimestamp(parent.created),
                                                    now=datetime.fromtimestamp(time.time()))
     else:
-        trans_obj['parent']['body'] = parent.flair.selftext_html
-        trans_obj['parent']['title'] = parent.flair.title
-        trans_obj['parent']['points'] = parent.flair.score
-        trans_obj['parent']['author'] = parent.flair.author.name
-        trans_obj['parent']['url'] = parent.flair.url
-        trans_obj['parent']['time'] = dt.duration(datetime.fromtimestamp(parent.flair.created),
+        trans_obj['parent']['body'] = parent.flair.submission.selftext_html
+        trans_obj['parent']['title'] = parent.flair.submission.title
+        trans_obj['parent']['points'] = parent.flair.submission.score
+        trans_obj['parent']['author'] = parent.flair.submission.author.name
+        trans_obj['parent']['url'] = parent.flair.submission.url
+        trans_obj['parent']['time'] = dt.duration(datetime.fromtimestamp(parent.flair.submission.created),
                                                   now=datetime.fromtimestamp(time.time()))
-    trans_obj['footer']['url'] = parent.flair.url
-    trans_obj['footer']['title'] = 
+    submission = comment.submission
+    trans_obj['footer']['url'] = submission.url
+    trans_obj['footer']['title'] = submission.title
+    trans_obj['footer']['subreddit'] = submission.subreddit_name_prefixed
+    trans_obj['footer']['points'] = submission.score
+    trans_obj['footer']['comments'] = submission.num_comments
     return trans_obj
