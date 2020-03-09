@@ -3,6 +3,8 @@ from praw.models.reddit.comment import Comment
 from datetime import datetime
 import natural.date as dt
 import time
+from random import randint
+import numpy as np
 
 reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      client_secret='tRReu7VAAyxgEXbGqaE19_OUrR4',
@@ -177,59 +179,43 @@ def get_stack_bar(user):
         "french": 277,
         "russian": 71
     }]
-    return {'data': data, 'languages': ['spanish', 'french', 'russian']}
+    return {'data': data, 'languages': ['spanish', 'french', 'russian'], 'colors': ['#FCBA03', '#0388FC', '#FC032D']}
 
 
 def get_word_cloud(user):
-    data = [{
-        "tag": "Breaking News",
-        "weight": 60,
-        "color": "#4A2040"
-    }, {
-        "tag": "Environment",
-        "weight": 80,
-        "color": "#9F6BA0"
-    }, {
-        "tag": "Politics",
-        "weight": 90,
-        "color": "#C880B7"
-    }, {
-        "tag": "Business",
-        "weight": 25,
-        "color": "#EC9DED"
-    }, {
-        "tag": "Lifestyle",
-        "weight": 30,
-        "color": "#DFBAD3"
-    }, {
-        "tag": "World",
-        "weight": 45,
-        "color": "#C880B7"
-    }, {
-        "tag": "Sports",
-        "weight": 160,
-        "color": "#34D2EB"
-    }, {
-        "tag": "Fashion",
-        "weight": 20,
-        "color": "#C880B7"
-    }, {
-        "tag": "Education",
-        "weight": 78,
-        "color": "#9F6BA0"
-    }]
-    return data
+
+    text = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Amet tellus cras adipiscing enim eu Purus gravida quis blandit turpis cursus In dictum non consectetur a erat nam at lectus urna Sollicitudin ac orci phasellus egestas tellus rutrum Eros donec ac odio tempor orci dapibus ultrices in iaculis Arcu non sodales neque sodales ut etiam sit amet nisl Nibh nisl condimentum id venenatis Lobortis scelerisque fermentum dui faucibus in ornare quam"
+    splits = text.split(" ")
+    colors = ['#FCBA03', '#0388FC', '#FC032D']
+    data = [{'tag': word,
+             'weight': randint(1,100),
+             'color': np.random.choice(colors, 1)[0]} for word in splits[:50]]
+    return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(['spanish', 'french', 'russian'], colors)]}
 
 
 def get_bar_chart(user):
     data = [{
-        "country": "USA",
-        "visits": 3025
-        }, {
-          "country": "China",
-          "visits": 1882
-        }, {
-          "country": "Japan",
-          "visits": 1809
-        }]
-    return data
+        "subreddit": "r/sub1",
+        "spanish": 300,
+        "french": 200,
+        "russian": 100
+    }, {
+        "subreddit": "r/sub2",
+        "spanish": 20,
+        "french": 200,
+        "russian": 60
+    }, {
+        "subreddit": "r/sub3",
+        "spanish": 200,
+        "french": 20,
+        "russian": 50
+    }]
+    return {"data":data, 'languages': ['spanish', 'french', 'russian'], 'colors': ['#FCBA03', '#0388FC', '#FC032D']}
+
+
+def get_flash_cards(user):
+    cards = [
+        {'language': language, 'color': color,
+         "words": [{"front": "words", "back": "back"} for __ in range(8)]} for language, color in zip(['spanish', 'french', 'russian'], ['#FCBA03', '#0388FC', '#FC032D'])
+    ]
+    return cards

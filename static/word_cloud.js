@@ -4,11 +4,10 @@ am4core.ready(function() {
   // Themes end
   $.post("/api/word_cloud", {user: "user"}, function(result){
     var chart = am4core.create("word-cloud", am4plugins_wordCloud.WordCloud);
-    chart.fontFamily = "Courier New";
     var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
-    series.randomness = 0.1;
+    series.randomness = 0.2;
     series.rotationThreshold = 0;
-    var data = result;
+    var data = result.data;
     data.forEach(function(obs){
       obs.color = am4core.color(obs.color);
     });
@@ -28,5 +27,10 @@ am4core.ready(function() {
 
     var hoverState = series.labels.template.states.create("hover");
     hoverState.properties.fill = am4core.color("#07070e");
-  });
+
+    chart.legend = new am4charts.Legend();
+    chart.legend.align = "center";
+    chart.legend.data = result.legend;
+    chart.legend.position = "top";
+      });
 }); // end am4core.ready()

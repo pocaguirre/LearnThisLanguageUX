@@ -1,11 +1,24 @@
 am4core.ready(function() {
 // Themes begin
-am4core.useTheme(am4themes_animated);
+
 // Themes end
   $.post("/api/stacked_area", {user: "user"}, function(result){
     var languages = result.languages;
+    var colors = result.colors;
+    function am4themes_myTheme(target) {
+      if (target instanceof am4core.ColorSet) {
+        colors.forEach(function(obs){
+          target.list.push(am4core.color(obs));
+        });
+      }
+    }
+    am4core.useTheme(am4themes_myTheme);
+    am4core.useTheme(am4themes_animated);
+
+
     var chart = am4core.create("stacked-area", am4charts.XYChart);
     chart.data = result.data;
+
 
     var dateAxis = chart.xAxes.push(new am4charts.DateAxis());
     dateAxis.renderer.minGridDistance = 60;
@@ -26,6 +39,7 @@ am4core.useTheme(am4themes_animated);
       series.name = languages[l];
       series.dataFields.valueY = languages[l];
       series.tooltipText = "[#000]{valueY.value}[/]";
+      // series.fill = am4core.color(colors[l]);
       series.tooltip.background.fill = am4core.color("#FFF");
       series.tooltip.getStrokeFromObject = true;
       series.tooltip.background.strokeWidth = 3;

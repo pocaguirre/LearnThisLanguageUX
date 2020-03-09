@@ -17,10 +17,10 @@
   transform-style: preserve-3d;
 }
 
-.nav-link.active {
-  color: #ffffff !important;
-  background-color: #07070e !important;
-}
+/*.nav-link.active {*/
+/*  color: #ffffff !important;*/
+/*  background-color: #07070e !important;*/
+/*}*/
 
 /* Do an horizontal flip when you move the mouse over the flip box container */
 .flip-card:hover .flip-card-inner {

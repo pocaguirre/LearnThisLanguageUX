@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-from fake_data import get_comment, get_table, get_stack_bar, get_word_cloud, get_bar_chart
+from fake_data import get_comment, get_table, get_stack_bar, get_word_cloud, get_bar_chart, get_flash_cards
 
 app = Flask(__name__)
 
@@ -31,7 +31,8 @@ def user_my_feed(user):
 
 @app.route('/u/<user>/dashboard')
 def user_dashboard(user):
-    return render_template("my_dashboard.html")
+    flashcards = get_flash_cards(user)
+    return render_template("my_dashboard.html", cards=flashcards)
 
 
 @app.route('/api/stacked_area', methods=['POST'])
