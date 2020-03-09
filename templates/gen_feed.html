@@ -5,27 +5,49 @@
             <div class="sidebar-brand">
                 <a href="#">Learn This Language</a>
             </div>
-            <div class="sidebar-search">
-                <form class="text-light text-center">
-                    <div class="form-group text-left">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control search-menu" id="exampleInputEmail1" aria-describedby="emailHelp">
-                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-                    </div>
-                    <div class="form-group text-left">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control search-menu" id="exampleInputPassword1">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Log In</button>
-                    <div class="form-group signup-group">
-                        <span>OR</span> <br>
-                        <a href="#" id="signup">Sign Up</a> <br>
-                        <span>to track your progress</span>
-                    </div>
-                </form>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                         alt="User picture">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Jhon
+                        <strong>Smith</strong>
+                    </span>
+                    <span class="user-role">JSmithUser</span>
+                </div>
             </div>
-        <!-- sidebar-search  -->
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="header-menu">
+                        <span>General</span>
+                    </li>
+                    <li class="active">
+                        <a href="/u/user">
+                            <i class="fa fa-globe"></i>
+                            <span>Feed</span>
+                        </a>
+                    </li>
+                    <li class="header-menu">
+                        <span>Personal</span>
+                    </li>
+                    <li class="">
+                        <a href="/u/user/myfeed">
+                            <i class="fa fa-gem"></i>
+                            <span>My Feed</span>
+                        </a>
+                    </li>
+                    <li class="">
+                        <a href="/u/user/dashboard">
+                            <i class="fa fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- sidebar-menu  -->
         </div>
+        <!-- sidebar-content  -->
     </nav>
 {% endblock %}
 

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+{% block sidebar %}
+    <nav id="sidebar" class="sidebar-wrapper">
+        <div class="sidebar-content">
+            <div class="sidebar-brand">
+                <a href="#">Learn This Language</a>
+            </div>
+            <div class="sidebar-header">
+                <div class="user-pic">
+                    <img class="img-responsive img-rounded" src="https://raw.githubusercontent.com/azouaoui-med/pro-sidebar-template/gh-pages/src/img/user.jpg"
+                         alt="User picture">
+                </div>
+                <div class="user-info">
+                    <span class="user-name">Jhon
+                        <strong>Smith</strong>
+                    </span>
+                    <span class="user-role">JSmithUser</span>
+                </div>
+            </div>
+            <div class="sidebar-menu">
+                <ul>
+                    <li class="header-menu">
+                        <span>General</span>
+                    </li>
+                    <li class="">
+                        <a href="/u/user">
+                            <i class="fa fa-globe"></i>
+                            <span>Feed</span>
+                        </a>
+                    </li>
+                    <li class="header-menu">
+                        <span>Personal</span>
+                    </li>
+                    <li class="">
+                        <a href="/u/user/myfeed">
+                            <i class="fa fa-gem"></i>
+                            <span>My Feed</span>
+                        </a>
+                    </li>
+                    <li class="active">
+                        <a href="/u/user/dashboard">
+                            <i class="fa fa-chart-line"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- sidebar-menu  -->
+        </div>
+        <!-- sidebar-content  -->
+    </nav>
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Words Translated Per Week</h2>
+                <div id="stacked-area"></div>
+            </div>
+{#            go here https://www.amcharts.com/docs/v4/#}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Most Common Words</h2>
+                <div id="word-cloud"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Words Per Subreddit</h2>
+                <div id="bar-graph"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Flash Cards</h2>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    {% for card in cards %}
+                        <li class="nav-item">
+                        {% if loop.first %}
+                            <a class="nav-link active" id="pills-{{ card.language }}-tab" data-toggle="pill" href="#{{ card.language }}" role="tab" aria-controls="pills-{{ card.language }}" aria-selected="true">
+                        {% else %}
+                            <a class="nav-link" id="pills-{{ card.language }}-tab" data-toggle="pill" href="#{{ card.language }}" role="tab" aria-controls="pills-{{ card.language }}" aria-selected="true">
+                        {% endif %}
+                                {{ card.language }} <div class="parent-color" hidden>{{ card.color }}</div>
+                            </a>
+                        </li>
+                    {% endfor %}
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    {% for card in cards %}
+                        {% if loop.first %}
+                    <div class="tab-pane fade show active" id="{{ card.language }}" role="tabpanel" aria-labelledby="{{ card.language }}-tab">
+                        {% else %}
+                            <div class="tab-pane fade" id="{{ card.language }}" role="tabpanel" aria-labelledby="{{ card.language }}-tab">
+                    {% endif %}
+                        {% for word in card.words %}
+                        {% if loop.first or loop.index == 5 %}
+                        <div class="row card-row">
+                        {% endif %}
+                            <div class="col-3">
+                                <div class="flip-card">
+                                    <div class="flip-card-inner">
+                                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                                            <h1>{{ word.front }}</h1>
+                                        </div>
+                                        <div class="flip-card-back shadow-sm p-3 mb-5 rounded" style="background-color:{{ card.color }};">
+                                            <h1>{{ word.back }}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% if loop.index == 4 or loop.last %}
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
