@@ -1,7 +1,3 @@
 __pycache__/*
 .idea/
-<<<<<<< HEAD
 /static/mdbootstrap
-=======
-static/mdbootstrap/
->>>>>>> user-page
