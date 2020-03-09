@@ -1,5 +1,6 @@
 from flask import Flask, render_template, jsonify, request
-from fake_data import get_comment, get_table, get_stack_bar, get_word_cloud, get_bar_chart, get_flash_cards
+from get_data import get_comment, get_table, get_stack_bar, get_word_cloud, get_bar_chart, get_flash_cards, \
+    get_user_comments, get_all_comments
 
 app = Flask(__name__)
 
@@ -14,18 +15,14 @@ def landing_page():
 
 @app.route('/u/<user>')
 def user_feed_page(user):
-    comment = get_comment(
-        url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
-    comments = [comment for _ in range(10)]
+    comments = get_all_comments()
     return render_template("gen_feed.html", comments=comments)
 
 
 @app.route('/u/<user>/myfeed')
 def user_my_feed(user):
-    comment = get_comment(
-        url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
-    comments = [comment for _ in range(10)]
-    columns, data = get_table()
+    comments = get_user_comments(user)
+    columns, data = get_table(user)
     return render_template("my_feed.html", table_columns=columns, table_data=data, comments=comments)
 
 
