@@ -54,6 +54,356 @@
 
 {% block content %}
 <div class="container">
-
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Stacked Area</h2>
+                <div id="stacked-area"></div>
+            </div>
+{#            go here https://www.amcharts.com/docs/v4/#}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Word Cloud</h2>
+                <div id="word-cloud"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <!-- HTML -->
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Bar Graph</h2>
+                <div id="bar-graph"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="shadow p-3 mb-5 bg-light rounded">
+                <h2>Cards</h2>
+                <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="pills-spanish-tab" data-toggle="pill" href="#spanish" role="tab" aria-controls="pills-spanish" aria-selected="true">Spanish</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-french-tab" data-toggle="pill" href="#french" role="tab" aria-controls="pills-french" aria-selected="false">French</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="pills-russian-tab" data-toggle="pill" href="#russian" role="tab" aria-controls="pills-russian" aria-selected="false">Russian</a>
+                    </li>
+                </ul>
+                <div class="tab-content" id="pills-tabContent">
+                    <div class="tab-pane fade show active" id="spanish" role="tabpanel" aria-labelledby="spanish-tab">
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                    </div>
+                    <div class="tab-pane fade" id="french" role="tabpanel" aria-labelledby="french-tab">
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                    </div>
+                    <div class="tab-pane fade" id="russian" role="tabpanel" aria-labelledby="russian-tab">
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                        <div class="row card-row">
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                    <div class="col-6 col-xl-3"><div class="flip-card">
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Front</p>
+                        </div>
+                        <div class="flip-card-back shadow-sm p-3 mb-5 bg-white rounded">
+                            <h1>John Doe</h1>
+                            <p>Back</p>
+                        </div>
+                    </div>
+                </div></div>
+                </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

@@ -17,11 +17,17 @@ def user_feed_page(user):
         url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
     return render_template("gen_feed.html", comments=[comment])
 
+
 @app.route('/u/<user>/myfeed')
 def user_my_feed(user):
     comment = get_comment(
         url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
     return render_template("my_feed.html", comments=[comment])
+
+
+@app.route('/u/<user>/dashboard')
+def user_dashboard(user):
+    return render_template("my_dashboard.html")
 
 
 if __name__ == '__main__':
