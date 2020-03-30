@@ -1,4 +1,7 @@
 am4core.ready(function() {
+    $.post("/api/recommendations", {user: "FrenchLearnerJHU"}, function(result) {
+    // Themes begin
+    var data = result;
 
     /**
      * Chart design taken from Samsung health app
@@ -9,37 +12,7 @@ am4core.ready(function() {
 
     chart.paddingBottom = 30;
 
-    chart.data = [{
-        "name": "Monica",
-        "steps": 45688,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/monica.jpg",
-        "url": "https://www.google.com"
-    }, {
-        "name": "Joey",
-        "steps": 35781,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/joey.jpg",
-        "url": "https://www.google.com"
-    }, {
-        "name": "Ross",
-        "steps": 25464,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/ross.jpg",
-        "url": "https://www.google.com"
-    }, {
-        "name": "Phoebe",
-        "steps": 18788,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/phoebe.jpg",
-        "url": "https://www.google.com"
-    }, {
-        "name": "Rachel",
-        "steps": 15465,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/rachel.jpg",
-        "url": "https://www.google.com"
-    }, {
-        "name": "Chandler",
-        "steps": 11561,
-        "href": "https://www.amcharts.com/wp-content/uploads/2019/04/chandler.jpg",
-        "url": "https://www.google.com"
-    }];
+    chart.data = data;
 
     var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
     categoryAxis.dataFields.category = "name";
@@ -57,7 +30,7 @@ am4core.ready(function() {
     valueAxis.renderer.baseGrid.strokeOpacity = 0;
 
     var series = chart.series.push(new am4charts.ColumnSeries);
-    series.dataFields.valueY = "steps";
+    series.dataFields.valueY = "score";
     series.dataFields.categoryX = "name";
     series.tooltipText = "{valueY.value}";
     series.tooltip.pointerOrientation = "vertical";
@@ -129,5 +102,5 @@ am4core.ready(function() {
             }
         }
     });
-
+  });
 }); // end am4core.ready()

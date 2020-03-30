@@ -6,15 +6,15 @@
                 <a href="#">Learn This Language</a>
             </div>
             <div class="sidebar-search">
-                <form class="text-light text-center">
+                <form class="text-light text-center" action="/login" method="POST">
                     <div class="form-group text-left">
-                        <label for="exampleInputEmail1">Email address</label>
-                        <input type="email" class="form-control search-menu" id="exampleInputEmail1" aria-describedby="emailHelp">
-                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+                        <label for="username">Username</label>
+                        <input type="text" class="form-control search-menu" id="username" name="username" aria-describedby="username">
+                        <small id="username" class="form-text text-muted">We'll never share your username with anyone else.</small>
                     </div>
                     <div class="form-group text-left">
-                        <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control search-menu" id="exampleInputPassword1">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control search-menu" id="password" name="password">
                     </div>
                     <button type="submit" class="btn btn-primary">Log In</button>
                     <div class="form-group signup-group">

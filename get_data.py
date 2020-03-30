@@ -15,6 +15,27 @@ reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      username='pocaguirre')
 
 
+def check_user(username, password):
+    c = get_db()
+    data = (username, password)
+    c.execute("select username, passwd from users where username = ?", [username])
+    check = c.fetchall()
+    if check == []:
+        return False
+    else:
+        check = check[0]
+        if data == check:
+            return True
+        else:
+            return False
+
+def get_user_info(username):
+    c = get_db()
+    c.execute("select username, name from users where username = ?", [username])
+    check = c.fetchall()
+    return {'username': check[0][0], "name": check[0][1]}
+
+
 def get_db():
     conn = sqlite3.connect('./database.db')
     cur = conn.cursor()
@@ -85,7 +106,6 @@ def get_user_comments(user):
     comments = []
     for url, in rows:
         comments.append(get_comment(url=url))
-    print(comments)
     return comments
 
 
@@ -217,7 +237,6 @@ def get_bar_chart(user):
         for lang_id, counter in text.items():
             data_item[lang_id] = sum(counter.values())
         data.append(data_item)
-    print(data)
     return {"data": data, 'languages': list(languages), 'colors': colors}
 
 
@@ -236,3 +255,15 @@ def get_flash_cards(user):
          "words": [{"front": tgt, "back": src} for src, tgt in pairs]} for (language, pairs), color in zip(words.items(), colors)
     ]
     return cards
+
+
+def get_recommendations(user):
+    sqlite_cur = get_db()
+    rows = sqlite_cur.execute(
+        "SELECT subreddit_id, rec_score FROM UserRecommendedSubreddits WHERE user_id = ? ORDER BY rec_score DESC LIMIT 10",
+        (user,))
+    data = []
+    for row in rows:
+        data.append({"name": row[0], "score": row[1], "href": "https://external-preview.redd.it/QJRqGgkUjhGSdu3vfpckrvg1UKzZOqX2BbglcLhjS70.png?auto=webp&s=c681ae9c9b5021d81b6c4e3a2830f09eff2368b5"})
+    columns = ["subreddit", "rec_score"]
+    return columns, data
