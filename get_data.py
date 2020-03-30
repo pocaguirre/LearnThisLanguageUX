@@ -16,7 +16,7 @@ reddit = Reddit(client_id='OFsSWAsbFrzLpg',
 
 
 def get_db():
-    conn = sqlite3.connect('../database.db')
+    conn = sqlite3.connect('./database.db')
     cur = conn.cursor()
     return cur
 
