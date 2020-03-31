@@ -19,9 +19,12 @@ def landing_page():
     if 'username' in session:
         return redirect("/u/{}".format(session['username']))
     else:
-        comment = db.get_comment(
-            url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
-        comments = [comment for _ in range(10)]
+        if fake:
+            comment = db.get_comment(
+                url="https://www.reddit.com/r/iPadPro/comments/fduvm7/apple_pencil_help/fjl0r10?utm_source=share&utm_medium=web2x")
+            comments = [comment for _ in range(10)]
+        else:
+            comments = db.get_all_comments()
         return render_template("index.html", comments=comments)
 
 

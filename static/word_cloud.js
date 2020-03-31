@@ -7,6 +7,9 @@ am4core.ready(function() {
     var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
     series.randomness = 0.2;
     series.rotationThreshold = 0;
+    series.accuracy = 3;
+    series.maxFontSize = 40;
+    series.minFontSize = 10;
     var data = result.data;
     data.forEach(function(obs){
       obs.color = am4core.color(obs.color);

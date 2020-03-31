@@ -7,12 +7,19 @@ import natural.date as dt
 import time
 import numpy as np
 import sqlite3
+import json
+import pandas as pd
 
 reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      client_secret='tRReu7VAAyxgEXbGqaE19_OUrR4',
                      password='Bohbut-xinkoq-sahca1',
                      user_agent='testscript by /u/pocaguirre',
                      username='pocaguirre')
+
+
+with open("subreddit_thumbnails.json", "r") as f:
+    subreddit_list = json.load(f)
+    subreddit_df = pd.DataFrame(subreddit_list)
 
 
 def check_user(username, password):
@@ -215,8 +222,10 @@ def get_word_cloud(user):
     languages = []
     for i, (lang_id, texts_dict) in enumerate(texts.items()):
         languages.append(lang_id)
-        for word, word_cnt in texts_dict.items():
-            data.append({'tag': word, 'weight': np.random.randint(100), 'color': colors[i]})
+        for j, (word, word_cnt) in enumerate(texts_dict.items()):
+            if j > 25:
+                break
+            data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
     return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(languages, colors)]}
 
 
@@ -264,6 +273,17 @@ def get_recommendations(user):
         (user,))
     data = []
     for row in rows:
-        data.append({"name": row[0], "score": row[1], "href": "https://external-preview.redd.it/QJRqGgkUjhGSdu3vfpckrvg1UKzZOqX2BbglcLhjS70.png?auto=webp&s=c681ae9c9b5021d81b6c4e3a2830f09eff2368b5"})
+        subred = subreddit_df[subreddit_df['subreddit'].str.lower() == row[0].lower()]
+        if len(subred) > 0:
+            if subred.iloc[0]['icon_img'] is None:
+                if subred.iloc[0]['community_icon'] is not None:
+                    href = subred.iloc[0]['community_icon']
+                else:
+                    href = "https://external-preview.redd.it/QJRqGgkUjhGSdu3vfpckrvg1UKzZOqX2BbglcLhjS70.png?auto=webp&s=c681ae9c9b5021d81b6c4e3a2830f09eff2368b5"
+            else:
+                href = subred.iloc[0]['icon_img']
+        else:
+            href = "https://external-preview.redd.it/QJRqGgkUjhGSdu3vfpckrvg1UKzZOqX2BbglcLhjS70.png?auto=webp&s=c681ae9c9b5021d81b6c4e3a2830f09eff2368b5"
+        data.append({"name": row[0], "score": row[1], "href": href})
     columns = ["subreddit", "rec_score"]
     return columns, data
