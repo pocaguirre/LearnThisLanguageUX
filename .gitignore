@@ -3,3 +3,4 @@ __pycache__/*
 /static/mdbootstrap
 .venv/
 subreddit_thumbnails.json
+env/
