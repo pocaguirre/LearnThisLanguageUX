@@ -1,0 +1,19 @@
+## Artifacts
+*egg-info*
+*pytest_cache*
+*pycache*
+*workspace*
+
+## Credentials
+config.json
+
+## Data
+data/raw/user_item/
+data/raw/language/
+data/*.tar.gz
+data/*.joblib
+models/*.cf
+data/raw/covid/
+data/raw/metadata/temp/
+data/raw/metadata/subreddit_metadata.csv
+data/db/*.db
