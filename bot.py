@@ -41,7 +41,7 @@ def translate_post(comment_text, src_text):
     pron   = 'pronounced: \n> "%s"' % hyp.pronunciation if hyp.pronunciation!=None else ''
     suffix = 'Have a better translation? Let me know in a comment below!\n\nInterested in learning a new language? Sign up and track your progress at [learnthislanguage.me](http://learnthislanguage.me)'
 
-    return '\n'.join([prefix,pron,suffix])
+    return '\n'.join([prefix,pron,suffix]), code
 
 
 # -- bot runner --
@@ -61,18 +61,18 @@ def run_bot():
                     # different fields for posts vs comments
                     if type(comment.parent()) == praw.models.reddit.comment.Comment:
                         src_text = comment.parent().body.lower()
-                        to_post  = translate_post(comment_text, src_text)
+                        to_post, lang_id = translate_post(comment_text, src_text)
                     else:
                         if comment.parent().selftext == '':
                             # No text body
                             continue
                         else:
                             src_text = comment.parent().selftext #terrible name scheme
-                            to_post  = translate_post(comment_text, src_text)
+                            to_post, lang_id = translate_post(comment_text, src_text)
                     # post & add comment id to cache
                     new_comment = comment.reply(to_post)
                     if new_comment is not None:
-                        get_data.cache_comment(cur, id=new_comment.id)
+                        get_data.cache_comment(cur, id=new_comment.id, lang_id=lang_id)
                         past_requests.add(comment.id)
 
     conn.commit()

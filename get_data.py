@@ -83,7 +83,7 @@ def show_comment(comment):
 
     return trans_obj
 
-def cache_comment(sql_cur, id=None, url=None):
+def cache_comment(sql_cur, id=None, url=None, lang_id="NA"):
     if id is None and url is None:
         raise ValueError("Must provide either id or url of the comment")
     if id is not None:
@@ -100,7 +100,7 @@ def cache_comment(sql_cur, id=None, url=None):
     target_comment['author_id'] = comment.author.name
     target_comment['url'] = "https://www.reddit.com"+comment.permalink
     target_comment['time'] = datetime.fromtimestamp(comment.created)
-    target_comment['lang_id'] = 'NA'
+    target_comment['lang_id'] = lang_id
 
     target_comment['request_comment_id'] = comment.parent().id
     target_comment['request_body'] = comment.parent().body_html
@@ -125,7 +125,7 @@ def cache_comment(sql_cur, id=None, url=None):
         source_comment['author_id'] = parent.flair.submission.author.name
         source_comment['url'] = parent.flair.submission.url
         source_comment['time'] = datetime.fromtimestamp(parent.flair.submission.created)
-    source_comment['lang_id'] = 'NA'
+    source_comment['lang_id'] = lang_id
 
     submission = comment.submission
     target_comment['submission_url'] = submission.url
@@ -274,11 +274,12 @@ def get_word_cloud(user):
         texts[row['lang_id']].update(text)
     languages = []
     for i, (lang_id, texts_dict) in enumerate(texts.items()):
-        languages.append(lang_id)
-        for j, (word, word_cnt) in enumerate(texts_dict.items()):
-            if j > 25:
-                break
-            data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
+        if i < 3:
+            languages.append(lang_id)
+            for j, (word, word_cnt) in enumerate(texts_dict.items()):
+                if j > 25:
+                    break
+                data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
     print(user)
     return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(languages, colors)]}
 
