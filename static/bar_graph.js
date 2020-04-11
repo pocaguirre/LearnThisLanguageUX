@@ -1,5 +1,5 @@
 am4core.ready(function() {
-  $.post("/api/bar_chart", {user: "FrenchLearnerJHU"}, function(result) {
+  $.post("/api/bar_chart", {user: $( "#username" ).attr( "username")}, function(result) {
     // Themes begin
     var languages = result.languages;
     var colors = result.colors;

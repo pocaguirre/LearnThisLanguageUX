@@ -1,5 +1,5 @@
 am4core.ready(function() {
-    $.post("/api/recommendations", {user: "FrenchLearnerJHU"}, function(result) {
+    $.post("/api/recommendations", {user: $( "#username" ).attr( "username")}, function(result) {
     // Themes begin
     var data = result;
 

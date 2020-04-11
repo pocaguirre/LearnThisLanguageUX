@@ -2,7 +2,7 @@ am4core.ready(function() {
 // Themes begin
 
 // Themes end
-  $.post("/api/stacked_area", {user: "user"}, function(result){
+  $.post("/api/stacked_area", {user: $( "#username" ).attr( "username")}, function(result){
     var languages = result.languages;
     var colors = result.colors;
     function am4themes_myTheme(target) {
