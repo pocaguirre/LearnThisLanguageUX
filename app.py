@@ -57,6 +57,12 @@ def login():
         return redirect('/u/{}'.format(username))
     return render_template('index.html')
 
+@app.route("/sign-up", methods=['POST'])
+def initialize_user():
+    ## Parse Form Username
+    username = request.form['username']
+    ## Make Recommendations and Cache In Database
+    _ = db.initialize_user_recommendations(username)
 
 @app.route('/api/stacked_area', methods=['POST'])
 def stacked_area_data():
