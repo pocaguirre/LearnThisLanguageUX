@@ -7,3 +7,6 @@ env/
 db_config.json
 *.sql
 *.json
+data/csv_files_backups
+data/create_db.py
+data/populate_db.py

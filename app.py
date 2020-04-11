@@ -1,6 +1,5 @@
 from flask import Flask, render_template, jsonify, request, session, redirect
 import get_data
-import fake_data
 
 
 app = Flask(__name__)
