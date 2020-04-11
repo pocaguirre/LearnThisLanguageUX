@@ -1,3 +1,8 @@
+
+#####################
+### Imports
+#####################
+
 import collections
 
 from praw import Reddit
@@ -12,17 +17,40 @@ import pandas as pd
 import pymysql.cursors
 import natural.date as dt
 
+## Recommendation
+from rrec.acquire.reddit import RedditData
+from rrec.model.reddit_recommender import RedditRecommender
+
+#####################
+### Globals
+#####################
+
 reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      client_secret='tRReu7VAAyxgEXbGqaE19_OUrR4',
                      password='Bohbut-xinkoq-sahca1',
                      user_agent='testscript by /u/pocaguirre',
                      username='pocaguirre')
 
+## Initialize PSAW (Fast Reddit Data Queries)
+psaw = RedditData()
 
+## Initialize Recommendation Model
+REC_MODEL_PATH = "./rrec/models/comments_20200221_20200228.cf"
+recommender = RedditRecommender(REC_MODEL_PATH)
+
+## Recommendation Database Paths
+DB_PATH = "./rrec/data/db/"
+USER_HISTORY_DB_PATH = f"{DB_PATH}user_history.db"
+RECOMMENDATION_HISTORY_DB_PATH = f"{DB_PATH}recommendations.db"
+
+## Subreddit Thumbnails
 with open("subreddit_thumbnails.json", "r") as f:
     subreddit_list = json.load(f)
     subreddit_df = pd.DataFrame(subreddit_list)
 
+#####################
+### Functions
+#####################
 
 def check_user(username, password):
     c, _ = get_db()
@@ -83,7 +111,7 @@ def show_comment(comment):
 
     return trans_obj
 
-def cache_comment(sql_cur, id=None, url=None):
+def cache_comment(sql_cur, id=None, url=None, lang_id="NA"):
     if id is None and url is None:
         raise ValueError("Must provide either id or url of the comment")
     if id is not None:
@@ -100,7 +128,7 @@ def cache_comment(sql_cur, id=None, url=None):
     target_comment['author_id'] = comment.author.name
     target_comment['url'] = "https://www.reddit.com"+comment.permalink
     target_comment['time'] = datetime.fromtimestamp(comment.created)
-    target_comment['lang_id'] = 'NA'
+    target_comment['lang_id'] = lang_id
 
     target_comment['request_comment_id'] = comment.parent().id
     target_comment['request_body'] = comment.parent().body_html
@@ -125,7 +153,7 @@ def cache_comment(sql_cur, id=None, url=None):
         source_comment['author_id'] = parent.flair.submission.author.name
         source_comment['url'] = parent.flair.submission.url
         source_comment['time'] = datetime.fromtimestamp(parent.flair.submission.created)
-    source_comment['lang_id'] = 'NA'
+    source_comment['lang_id'] = lang_id
 
     submission = comment.submission
     target_comment['submission_url'] = submission.url
@@ -274,11 +302,12 @@ def get_word_cloud(user):
         texts[row['lang_id']].update(text)
     languages = []
     for i, (lang_id, texts_dict) in enumerate(texts.items()):
-        languages.append(lang_id)
-        for j, (word, word_cnt) in enumerate(texts_dict.items()):
-            if j > 25:
-                break
-            data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
+        if i < 3:
+            languages.append(lang_id)
+            for j, (word, word_cnt) in enumerate(texts_dict.items()):
+                if j > 25:
+                    break
+                data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
     print(user)
     return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(languages, colors)]}
 
@@ -323,12 +352,60 @@ def get_flash_cards(user):
     ]
     return cards
 
+def initialize_user_recommendations(user):
+    """
+
+    """
+    ## Dates
+    GLOBAL_START_DATE = "2018-01-01"
+    TODAY = datetime.now().date().isoformat()
+    ## Query User Comment Data
+    user_comments = psaw.retrieve_author_comments(user, start_date=GLOBAL_START_DATE, end_date=TODAY)
+    ## Make Recommendations
+    subreddit_counts = user_comments["subreddit"].value_counts().to_dict()
+    recommendations = recommender.recommend(subreddit_counts, k_top=100, filter_liked=True)
+    ## Format User History for Database
+    subreddit_counts = user_comments.groupby(["author"])["subreddit"].value_counts().rename("COMMENT_COUNT").reset_index()
+    subreddit_counts["QUERY_START_DATE"] = GLOBAL_START_DATE
+    subreddit_counts["QUERY_END_DATE"] = TODAY
+    subreddit_counts.rename(columns={"author":"USER","subreddit":"SUBREDDIT"},inplace=True)
+    ## Update User History Table
+    user_history_con = sqlite3.connect(USER_HISTORY_DB_PATH)
+    subreddit_counts.to_sql("HISTORY", user_history_con, if_exists="append", index=False)
+    user_history_con.commit()
+    user_history_con.close()
+    ## Identify Most Popular Subreddits (Default Recommendations)
+    full_comment_distribution = pd.Series(index=recommender.cf._items,
+                                          data=np.array(recommender.cf._item_user_matrix.sum(axis=1)).T[0])
+    top_subreddits = full_comment_distribution.nlargest(100)
+    top_subreddits = top_subreddits / top_subreddits.max()
+    top_subreddits = pd.DataFrame(top_subreddits).rename(columns={0:"Recommendation Score"})
+    top_subreddits.index.name="item"
+    ## No-valid Recommendations (e.g. no user history matches)
+    if recommendations.values.max() == 0:
+        recommendations = top_subreddits.copy()
+    ## Format
+    recommendations = recommendations.reset_index().rename(columns={"item":"SUBREDDIT","Recommendation Score":"SCORE"})
+    recommendations["USER"] = user
+    recommendations["REC_DATE"] = TODAY
+    ## Upload Recommendations
+    rec_con = sqlite3.connect(RECOMMENDATION_HISTORY_DB_PATH)
+    recommendations.to_sql("RECOMMENDATIONS", con=rec_con, if_exists="append",index=False)
+    rec_con.commit()
+    rec_con.close()
+    
 
 def get_recommendations(user):
-    sql_cur, _ = get_db()
-    sql_cur.execute(
-        "SELECT subreddit_id, rec_score FROM UserRecommendedSubreddits WHERE user_id = %s ORDER BY rec_score DESC LIMIT 10",
-        (user,))
+    rec_con = sqlite3.connect(RECOMMENDATION_HISTORY_DB_PATH)
+    cursor = rec_con.cursor()
+    ## Get Max Recommendation Date
+    max_date = cursor.execute("SELECT MAX(REC_DATE) FROM RECOMMENDATIONS WHERE USER = ?", (user, ))
+    max_date = max_date.fetchall()[0][0]
+    ## Get Recommendations
+    rows = cursor.execute(
+        "SELECT SUBREDDIT, SCORE FROM RECOMMENDATIONS WHERE USER = ? AND REC_DATE = ? ORDER BY SCORE DESC LIMIT 10", (user, max_date)
+    )
+    ## Parse Recommendations
     data = []
     for row in sql_cur:
         subred = subreddit_df[subreddit_df['subreddit'].str.lower() == row['subreddit_id'].lower()]
