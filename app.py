@@ -55,7 +55,13 @@ def login():
     if db.check_user(username, password):
         session['username'] = username
         return redirect('/u/{}'.format(username))
-    return render_template('index.html')
+    return redirect('/')
+
+
+@app.route("/logout", methods=['POST'])
+def logout():
+    session.pop('username', None)
+    return redirect("/")
 
 
 @app.route('/api/stacked_area', methods=['POST'])
@@ -64,11 +70,13 @@ def stacked_area_data():
     data = db.get_stack_bar(user)
     return jsonify(data)
 
+
 @app.route('/api/word_cloud', methods=['POST'])
 def word_cloud_data():
     user = request.form['user']
     data = db.get_word_cloud(user)
     return jsonify(data)
+
 
 @app.route('/api/bar_chart', methods=['POST'])
 def bar_chart_data():
