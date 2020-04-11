@@ -5,3 +5,5 @@ __pycache__/*
 subreddit_thumbnails.json
 env/
 db_config.json
+*.sql
+*.json

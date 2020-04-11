@@ -2,7 +2,7 @@ am4core.ready(function() {
   // Themes begin
   am4core.useTheme(am4themes_animated);
   // Themes end
-  $.post("/api/word_cloud", {user: "FrenchLearnerJHU"}, function(result){
+  $.post("/api/word_cloud", {user: $( "#username" ).attr( "username")}, function(result){
     var chart = am4core.create("word-cloud", am4plugins_wordCloud.WordCloud);
     var series = chart.series.push(new am4plugins_wordCloud.WordCloudSeries());
     series.randomness = 0.2;
