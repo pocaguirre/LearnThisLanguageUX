@@ -18,8 +18,8 @@ import pymysql.cursors
 import natural.date as dt
 
 ## Recommendation
-from rrec.acquire.reddit import RedditData
-from rrec.model.reddit_recommender import RedditRecommender
+# from rrec.acquire.reddit import RedditData
+# from rrec.model.reddit_recommender import RedditRecommender
 
 #####################
 ### Globals
@@ -32,11 +32,11 @@ reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      username='pocaguirre')
 
 ## Initialize PSAW (Fast Reddit Data Queries)
-psaw = RedditData()
+# psaw = RedditData()
 
 ## Initialize Recommendation Model
-REC_MODEL_PATH = "./rrec/models/comments_20200221_20200228.cf"
-recommender = RedditRecommender(REC_MODEL_PATH)
+#REC_MODEL_PATH = "./rrec/models/comments_20200221_20200228.cf"
+#recommender = RedditRecommender(REC_MODEL_PATH)
 
 ## Recommendation Database Paths
 DB_PATH = "./rrec/data/db/"
@@ -66,6 +66,25 @@ def get_user_info(username):
     c.execute("select username, name from Users where username = %s", (username,))
     check = c.fetchall()
     return {'username': check[0]['username'], "name": check[0]['name']}
+
+
+def is_user(username):
+    c, _ = get_db()
+    c.execute("select username from Users where username = %s", (username,))
+    check = c.fetchall()
+    if len(check) > 0:
+        return False
+    else:
+        return True
+
+
+def create_new_user(username, name, password):
+    c, conn = get_db()
+    c.execute("""INSERT INTO Users (username, name, passwd)
+                 VALUES
+                 ('{}', '{}', password('{}'))""".format(username, name, password))
+    conn.commit()
+    c.close()
 
 
 def get_db():
@@ -393,7 +412,7 @@ def initialize_user_recommendations(user):
     recommendations.to_sql("RECOMMENDATIONS", con=rec_con, if_exists="append",index=False)
     rec_con.commit()
     rec_con.close()
-    
+
 
 def get_recommendations(user):
     rec_con = sqlite3.connect(RECOMMENDATION_HISTORY_DB_PATH)

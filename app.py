@@ -57,17 +57,26 @@ def login():
     return redirect('/')
 
 
-@app.route("/logout", methods=['POST'])
+@app.route("/logout", methods=['GET'])
 def logout():
     session.pop('username', None)
     return redirect("/")
 
-@app.route("/sign-up", methods=['POST'])
+@app.route("/signup", methods=['GET', 'POST'])
 def initialize_user():
-    ## Parse Form Username
-    username = request.form['username']
-    ## Make Recommendations and Cache In Database
-    _ = db.initialize_user_recommendations(username)
+    if request.method == 'GET':
+        return render_template("sign_up.html")
+    elif request.method == 'POST':
+        ## Parse Form Username
+        username = request.form['redditid']
+        name = request.form['name']
+        passwd = request.form['password1']
+        db.create_new_user(username=username, name=name, password=passwd)
+        print("done creating")
+        session['username'] = username
+        return redirect('/u/{}'.format(username))
+        ## Make Recommendations and Cache In Database
+        # _ = db.initialize_user_recommendations(username)
 
 @app.route('/api/stacked_area', methods=['POST'])
 def stacked_area_data():
@@ -95,6 +104,12 @@ def recommendations():
     user = request.form['user']
     columns, data = db.get_recommendations(user)
     return jsonify(data)
+
+
+@app.route('/api/user_lookup', methods=['POST'])
+def api_user_lookup():
+    user = request.form['user']
+    return jsonify({'valid': db.is_user(user)})
 
 
 if __name__ == '__main__':
