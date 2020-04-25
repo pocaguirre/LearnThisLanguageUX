@@ -24,6 +24,7 @@ from datetime import datetime, timedelta
 
 ## External Libraries
 import joblib
+import get_data
 import numpy as np
 import pandas as pd
 import sqlite3 as sql
@@ -37,16 +38,17 @@ from rrec.model.reddit_recommender import RedditRecommender
 ### Functions
 #################
 
-def retrieve_active_users(database_path):
+def retrieve_active_users():
     """
 
     """
     ## Connect to database 
-    app_db_connection = sql.connect(APP_DB_PATH)
+    # app_db_connection = sql.connect(APP_DB_PATH)
+    cur, conn = get_data.get_db()
     ## Load Users
-    users = pd.read_sql("SELECT * FROM USERS", app_db_connection)
+    users = pd.read_sql("SELECT username FROM Users", conn)
     ## Isolate Users
-    users = users["user_id"].tolist()
+    users = users["username"].tolist()
     return users
 
 
@@ -124,7 +126,11 @@ def update_user_histories(active_users):
     user_comment_histories = []
     for user, (start, stop) in tqdm(query_dates.items(), total=len(query_dates), file=sys.stdout, desc="User Histories"):
         df = reddit.retrieve_author_comments(user, start_date=start, end_date=stop)
-        subreddit_counts = df.groupby(["author"])["subreddit"].value_counts().rename("COMMENT_COUNT").reset_index()
+        try:
+            subreddit_counts = df.groupby(["author"])["subreddit"].value_counts().rename("COMMENT_COUNT").reset_index()
+        except:
+            print('failed user:', user)
+            import pdb; pdb.set_trace()
         subreddit_counts["QUERY_START_DATE"] = start
         subreddit_counts["QUERY_END_DATE"] = stop
         subreddit_counts.rename(columns={"author":"USER","subreddit":"SUBREDDIT"},inplace=True)
@@ -192,7 +198,7 @@ def main():
 
     """
     ## Parse Command Line Arguments
-    args = parse_command_line()
+    # args = parse_command_line()
     ## Check/Created DB Directory
     if not os.path.exists(DB_PATH):
         os.makedirs(DB_PATH)
@@ -200,7 +206,7 @@ def main():
     _ = initialize_history_db()
     _ = initialize_recommendation_db()
     ## Get Active Website Users
-    active_users = retrieve_active_users(args.database_path)
+    active_users = retrieve_active_users()
     ## Update User Histories
     _ = update_user_histories(active_users)
     ## Update Recommendations
