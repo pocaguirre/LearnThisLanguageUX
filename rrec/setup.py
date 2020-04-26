@@ -19,6 +19,6 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/kharrigian/rrec",
     packages=setuptools.find_packages(),
-    python_requires='>=3.7',
+    python_requires='>=3.6',
     install_requires=requirements,
 )
