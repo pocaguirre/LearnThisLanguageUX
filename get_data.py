@@ -269,7 +269,7 @@ def get_stack_bar(user):
         val['week'] = date
         data.append(val)
 
-    languages = [x[0] for x in lang_cntr.most_common()]
+    languages = sorted(list(lang_cntr.keys()))
     return {'data': data, 'languages': languages, 'colors': colors}
 
 
@@ -288,7 +288,8 @@ def get_word_cloud(user):
         text = [w for w in text if not punct.match(w)]
         texts[row['lang_id']].update(text)
     languages = []
-    for i, (lang_id, texts_dict) in enumerate(texts.items()):
+    texts = sorted(texts.items())
+    for i, (lang_id, texts_dict) in enumerate(texts):
         if i >= len(colors):
             break
         languages.append(lang_id)
@@ -296,7 +297,6 @@ def get_word_cloud(user):
             if j > 25:
                 break
             data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
-    print(user)
     return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(languages, colors)]}
 
 
@@ -320,7 +320,7 @@ def get_bar_chart(user):
             data_item[lang_id] = sum(counter.values())
         data.append(data_item)
 
-    return {"data": data, 'languages': list(languages), 'colors': colors}
+    return {"data": data, 'languages': sorted(list(languages)), 'colors': colors}
 
 
 def get_flash_cards(user):
@@ -332,9 +332,11 @@ def get_flash_cards(user):
     for row in sql_cur:
         words[row['tgt_lang_id']].append((row['src_lang_word'], row['tgt_lang_word']))
 
+    words = sorted(words.items())
+
     cards = [
         {'language': language, 'color': color,
-         "words": [{"front": tgt, "back": src} for src, tgt in pairs]} for (language, pairs), color in zip(words.items(), colors)
+         "words": [{"front": tgt, "back": src} for src, tgt in pairs]} for (language, pairs), color in zip(words, colors)
     ]
     return cards
 
