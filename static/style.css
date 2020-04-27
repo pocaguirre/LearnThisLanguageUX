@@ -378,6 +378,24 @@ body {
   animation: swing ease-in-out 0.5s 1 alternate;
 }
 
+/*.sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {*/
+/*  font-family: "Font Awesome 5 Free";*/
+/*  font-weight: 900;*/
+/*  content: "\f105";*/
+/*  font-style: normal;*/
+/*  display: inline-block;*/
+/*  font-style: normal;*/
+/*  font-variant: normal;*/
+/*  text-rendering: auto;*/
+/*  -webkit-font-smoothing: antialiased;*/
+/*  -moz-osx-font-smoothing: grayscale;*/
+/*  text-align: center;*/
+/*  background: 0 0;*/
+/*  position: absolute;*/
+/*  right: 15px;*/
+/*  top: 14px;*/
+/*}*/
+
 .sidebar-wrapper .sidebar-menu .sidebar-dropdown > a:after {
   font-family: "Font Awesome 5 Free";
   font-weight: 900;
@@ -543,13 +561,17 @@ body {
 /*-----------------------------chiller-theme-------------------------------------------------*/
 
 .chiller-theme .sidebar-wrapper {
-    background: #31353D;
+  background: linear-gradient(0deg, #0011fa 0%, #ff3b29 100%);
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: scroll;
+  background-size: cover;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-header,
 .chiller-theme .sidebar-wrapper .sidebar-search,
 .chiller-theme .sidebar-wrapper .sidebar-menu {
-    border-top: 1px solid #3a3f48;
+    border-top: 1px solid #ffffff;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
@@ -565,7 +587,7 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-brand>a,
 .chiller-theme .sidebar-wrapper .sidebar-menu ul li a,
 .chiller-theme .sidebar-footer>a {
-    color: #818896;
+    color: #ffffff;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu ul li:hover>a,
@@ -573,11 +595,11 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-header .user-info,
 .chiller-theme .sidebar-wrapper .sidebar-brand>a:hover,
 .chiller-theme .sidebar-footer>a:hover i {
-    color: #b8bfce;
+    color: #fffcfc;
 }
 
 .page-wrapper.chiller-theme.toggled #close-sidebar {
-    color: #bdbdbd;
+    color: #fff8f8;
 }
 
 .page-wrapper.chiller-theme.toggled #close-sidebar:hover {
@@ -596,11 +618,13 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
-    background: #3a3f48;
+    background: #ffffff82;
+    color:black
 }
 
+
 .chiller-theme .sidebar-wrapper .sidebar-menu .header-menu span {
-    color: #6c7b88;
+    color: #ffffff;
 }
 
 .chiller-theme .sidebar-footer {
@@ -615,4 +639,8 @@ body {
 
 .chiller-theme .sidebar-footer>a:last-child {
     border-right: none;
+}
+
+.text-muted {
+    color: #c6c6c6 !important;
 }
