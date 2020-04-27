@@ -13,6 +13,15 @@ def landing_page():
         return redirect("/u/{}".format(session['username']))
     else:
         comments = db.get_all_comments()
+        return render_template("landing_page.html", comments=comments)
+
+
+@app.route('/feed')
+def feed():
+    if 'username' in session:
+        return redirect("/u/{}".format(session['username']))
+    else:
+        comments = db.get_all_comments()
         return render_template("index.html", comments=comments)
 
 
@@ -113,4 +122,5 @@ def api_user_lookup():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0')
+    # app.run(host='0.0.0.0')
+    app.run()
