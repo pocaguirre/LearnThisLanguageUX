@@ -559,7 +559,6 @@ body {
 
 
 /*-----------------------------chiller-theme-------------------------------------------------*/
-
 .chiller-theme .sidebar-wrapper {
   background: linear-gradient(0deg, #0011fa 0%, #ff3b29 100%);
   background-repeat: no-repeat;
@@ -628,9 +627,9 @@ body {
 }
 
 .chiller-theme .sidebar-footer {
-    background: #3a3f48;
-    box-shadow: 0px -1px 5px #282c33;
-    border-top: 1px solid #464a52;
+    background: #ff3b29;
+    box-shadow: 0px -1px 5px #bd2130;
+    border-top: 1px solid #bd2130;
 }
 
 .chiller-theme .sidebar-footer>a:first-child {
