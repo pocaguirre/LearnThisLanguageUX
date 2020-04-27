@@ -12,14 +12,29 @@ from datetime import datetime
 import re
 import time
 import json
+import regex
+import sqlite3
 import numpy as np
 import pandas as pd
 import pymysql.cursors
 import natural.date as dt
 
 ## Recommendation
-# from rrec.acquire.reddit import RedditData
-# from rrec.model.reddit_recommender import RedditRecommender
+from rrec.acquire.reddit import RedditData
+from rrec.model.reddit_recommender import RedditRecommender
+
+# Spacy
+from spacy.lang.en import English
+from spacy.lang.es import Spanish
+from spacy.lang.fr import French
+from spacy.lang.zh import Chinese
+from spacy.lang.ru import Russian
+from spacy.lang.ar import Arabic
+from spacy.lang.de import German
+from spacy.lang.uk import Ukrainian
+from spacy.lang.ro import Romanian
+
+lang_id_to_spacy = {'en': English(), 'es': Spanish(), 'fr': French(), 'zh-cn': Chinese(), 'ru': Russian(), 'ar': Arabic(), 'de': German(), 'uk': Ukrainian(), 'ro': Romanian()}
 
 #####################
 ### Globals
@@ -32,11 +47,11 @@ reddit = Reddit(client_id='OFsSWAsbFrzLpg',
                      username='pocaguirre')
 
 ## Initialize PSAW (Fast Reddit Data Queries)
-# psaw = RedditData()
+psaw = RedditData()
 
 ## Initialize Recommendation Model
-#REC_MODEL_PATH = "./rrec/models/comments_20200221_20200228.cf"
-#recommender = RedditRecommender(REC_MODEL_PATH)
+REC_MODEL_PATH = "./rrec/models/comments_20200221_20200228.cf"
+recommender = None
 
 ## Recommendation Database Paths
 DB_PATH = "./rrec/data/db/"
@@ -47,6 +62,8 @@ RECOMMENDATION_HISTORY_DB_PATH = f"{DB_PATH}recommendations.db"
 with open("subreddit_thumbnails.json", "r") as f:
     subreddit_list = json.load(f)
     subreddit_df = pd.DataFrame(subreddit_list)
+
+colors = ['#A0332F', '#CB7B42', '#DCBF53', '#93A864', '#5E89A8', '#524A66']
 
 #####################
 ### Functions
@@ -107,7 +124,7 @@ def show_comment(comment):
     trans_obj['translated']['body'] = comment['body']
     trans_obj['translated']['points'] = comment['points']
     trans_obj['translated']['author'] = comment['author_id']
-    trans_obj['translated']['url'] = "https://www.reddit.com" + comment['url']
+    trans_obj['translated']['url'] = comment['url']
     trans_obj['translated']['time'] = dt.duration(comment['time'], now=now)
 
     trans_obj['request']['body'] = comment['request_body']
@@ -130,7 +147,7 @@ def show_comment(comment):
 
     return trans_obj
 
-def cache_comment(sql_cur, id=None, url=None, lang_id="NA"):
+def cache_comment(sql_cur, id=None, url=None, lang_id="NA", translated_text=""):
     if id is None and url is None:
         raise ValueError("Must provide either id or url of the comment")
     if id is not None:
@@ -143,6 +160,7 @@ def cache_comment(sql_cur, id=None, url=None, lang_id="NA"):
 
     target_comment['comment_id'] = comment.id
     target_comment['body'] = comment.body_html
+    target_comment['body_translation'] = translated_text
     target_comment['points'] = comment.score
     target_comment['author_id'] = comment.author.name
     target_comment['url'] = "https://www.reddit.com"+comment.permalink
@@ -226,121 +244,71 @@ def get_table(user):
 
 
 def get_stack_bar(user):
-    data = [{
-        "week": "11/04/19",
-        "es": 1587,
-        "fr": 650,
-    }, {
-        "week": "11/11/19",
-        "es": 1567,
-        "fr": 683,
-    }, {
-        "week": "11/18/19",
-        "es": 1617,
-        "fr": 691,
-    }, {
-        "week": "11/25/19",
-        "es": 1630,
-        "fr": 642,
-    }, {
-        "week": "12/2/19",
-        "es": 1660,
-        "fr": 699,
-    }, {
-        "week": "12/9/19",
-        "es": 1683,
-        "fr": 721,
-    }, {
-        "week": "12/16/19",
-        "es": 1691,
-        "fr": 737,
-    }, {
-        "week": "12/23/19",
-        "es": 1298,
-        "fr": 680,
-    }, {
-        "week": "12/30/19",
-        "es": 1275,
-        "fr": 664,
-    }, {
-        "week": "01/06/20",
-        "es": 1246,
-        "fr": 648,
-    }, {
-        "week": "01/13/20",
-        "es": 1318,
-        "fr": 697,
-    }, {
-        "week": "01/20/20",
-        "es": 1213,
-        "fr": 633,
-    }, {
-        "week": "01/27/20",
-        "es": 1199,
-        "fr": 621,
-    }, {
-        "week": "02/03/20",
-        "es": 1110,
-        "fr": 210,
-    }, {
-        "week": "02/10/20",
-        "es": 1165,
-        "fr": 232,
-    }, {
-        "week": "02/17/20",
-        "es": 1145,
-        "fr": 219,
-    }, {
-        "week": "02/24/20",
-        "es": 1163,
-        "fr": 201,
-    }, {
-        "week": "03/02/20",
-        "es": 1180,
-        "fr": 285,
-    }, {
-        "week": "03/09/20",
-        "es": 1159,
-        "fr": 277,
-    }]
-    return {'data': data, 'languages': ['es', 'fr'], 'colors': ['#FCBA03', '#0388FC']}
+    cleanr = re.compile('<.*?>')
+    punct = regex.compile('^\p{Punct}$')
+    sql_cur, _ = get_db()
+    data = []
+    results = collections.defaultdict(collections.Counter)
+    lang_cntr = collections.Counter()
+    sql_cur.execute(
+        "SELECT lang_id, body_translation, time FROM TargetComment WHERE request_author_id = %s", (user,))
+    for row in sql_cur:
+        text = row['body_translation'].strip().lower()
+        text = re.sub(cleanr, '', text)
+        text = [str(x) for x in lang_id_to_spacy.get(row['lang_id'], lang_id_to_spacy['en'])(text)]
+        text = [w for w in text if not punct.match(w)]
+        dt_year, dt_weekno, _ = row['time'].isocalendar()
+        dt_monday = datetime.strptime('%d-%d-1' % (dt_year, dt_weekno), '%Y-%W-%w')
+        date_str = dt_monday.strftime('%m/%d/%y')
+        upd = {row['lang_id']: len(text)}
+        lang_cntr.update(upd)
+        results[date_str].update(upd)
+
+    for date, val in results.items():
+        val = dict(val)
+        val['week'] = date
+        data.append(val)
+
+    languages = sorted(list(lang_cntr.keys()))
+    return {'data': data, 'languages': languages, 'colors': colors}
 
 
 def get_word_cloud(user):
     cleanr = re.compile('<.*?>')
+    punct = regex.compile('^\p{Punct}$')
     sql_cur, _ = get_db()
     data = []
-    colors = ['#FCBA03', '#0388FC', '#FC032D']
     sql_cur.execute(
-        "SELECT lang_id, body FROM TargetComment WHERE request_author_id = %s", (user,))
+        "SELECT lang_id, body_translation FROM TargetComment WHERE request_author_id = %s", (user,))
     texts = collections.defaultdict(collections.Counter)
     for row in sql_cur:
-        text = row['body'].strip()
+        text = row['body_translation'].strip().lower()
         text = re.sub(cleanr, '', text)
-        text = text.split()
+        text = [str(x) for x in lang_id_to_spacy.get(row['lang_id'], lang_id_to_spacy['en'])(text)]
+        text = [w for w in text if not punct.match(w)]
         texts[row['lang_id']].update(text)
     languages = []
-    for i, (lang_id, texts_dict) in enumerate(texts.items()):
-        if i < 3:
-            languages.append(lang_id)
-            for j, (word, word_cnt) in enumerate(texts_dict.items()):
-                if j > 25:
-                    break
-                data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
-    print(user)
+    texts = sorted(texts.items())
+    for i, (lang_id, texts_dict) in enumerate(texts):
+        if i >= len(colors):
+            break
+        languages.append(lang_id)
+        for j, (word, word_cnt) in enumerate(texts_dict.items()):
+            if j > 25:
+                break
+            data.append({'tag': word, 'weight': np.random.randint(50, 100), 'color': colors[i]})
     return {"data": data, 'legend': [{"name": lan, "fill": c} for lan, c in zip(languages, colors)]}
 
 
 def get_bar_chart(user):
     cleanr = re.compile('<.*?>')
     sql_cur, _ = get_db()
-    colors = ['#FCBA03', '#0388FC', '#FC032D']
     sql_cur.execute(
-        "SELECT lang_id, body, submission_subreddit_id FROM TargetComment WHERE request_author_id = %s", (user,))
+        "SELECT lang_id, body_translation, submission_subreddit_id FROM TargetComment WHERE request_author_id = %s", (user,))
     languages = set()
     texts = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
     for row in sql_cur:
-        text = row['body'].strip()
+        text = row['body_translation'].strip()
         text = re.sub(cleanr, '', text)
         text = text.split()
         texts[row['submission_subreddit_id']][row['lang_id']].update(text)
@@ -352,22 +320,23 @@ def get_bar_chart(user):
             data_item[lang_id] = sum(counter.values())
         data.append(data_item)
 
-    return {"data": data, 'languages': list(languages), 'colors': colors}
+    return {"data": data, 'languages': sorted(list(languages)), 'colors': colors}
 
 
 def get_flash_cards(user):
     sql_cur, _ = get_db()
     data = []
-    colors = ['#FCBA03', '#0388FC', '#FC032D']
     sql_cur.execute(
         "SELECT src_lang_word, tgt_lang_word, tgt_lang_id FROM UserLearnProgress WHERE user_id = %s", (user,))
     words = collections.defaultdict(list)
     for row in sql_cur:
         words[row['tgt_lang_id']].append((row['src_lang_word'], row['tgt_lang_word']))
 
+    words = sorted(words.items())
+
     cards = [
         {'language': language, 'color': color,
-         "words": [{"front": tgt, "back": src} for src, tgt in pairs]} for (language, pairs), color in zip(words.items(), colors)
+         "words": [{"front": tgt, "back": src} for src, tgt in pairs]} for (language, pairs), color in zip(words, colors)
     ]
     return cards
 
@@ -375,6 +344,9 @@ def initialize_user_recommendations(user):
     """
 
     """
+    global recommender
+    if recommender is not None:
+        recommender = RedditRecommender(REC_MODEL_PATH)
     ## Dates
     GLOBAL_START_DATE = "2018-01-01"
     TODAY = datetime.now().date().isoformat()
@@ -415,19 +387,28 @@ def initialize_user_recommendations(user):
 
 
 def get_recommendations(user):
+    def dict_factory(cursor, row):
+        d = {}
+        for idx,col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
+
     rec_con = sqlite3.connect(RECOMMENDATION_HISTORY_DB_PATH)
+    rec_con.row_factory = dict_factory
     cursor = rec_con.cursor()
     ## Get Max Recommendation Date
-    max_date = cursor.execute("SELECT MAX(REC_DATE) FROM RECOMMENDATIONS WHERE USER = ?", (user, ))
-    max_date = max_date.fetchall()[0][0]
+    max_date = cursor.execute("SELECT MAX(REC_DATE) as max_date FROM RECOMMENDATIONS WHERE USER = ?", (user, ))
+    max_date = max_date.fetchall()[0]['max_date']
     ## Get Recommendations
     rows = cursor.execute(
         "SELECT SUBREDDIT, SCORE FROM RECOMMENDATIONS WHERE USER = ? AND REC_DATE = ? ORDER BY SCORE DESC LIMIT 10", (user, max_date)
     )
     ## Parse Recommendations
     data = []
-    for row in sql_cur:
-        subred = subreddit_df[subreddit_df['subreddit'].str.lower() == row['subreddit_id'].lower()]
+    for row in rows:
+        # print(row)
+        # import pdb; pdb.set_trace()
+        subred = subreddit_df[subreddit_df['subreddit'].str.lower() == row['SUBREDDIT'].lower()]
         if len(subred) > 0:
             if subred.iloc[0]['icon_img'] is None:
                 if subred.iloc[0]['community_icon'] is not None:
@@ -438,6 +419,6 @@ def get_recommendations(user):
                 href = subred.iloc[0]['icon_img']
         else:
             href = "https://external-preview.redd.it/QJRqGgkUjhGSdu3vfpckrvg1UKzZOqX2BbglcLhjS70.png?auto=webp&s=c681ae9c9b5021d81b6c4e3a2830f09eff2368b5"
-        data.append({"name": row['subreddit_id'], "score": row['rec_score'], "href": href})
+        data.append({"name": row['SUBREDDIT'], "score": row['SCORE'], "href": href})
     columns = ["subreddit", "rec_score"]
     return columns, data

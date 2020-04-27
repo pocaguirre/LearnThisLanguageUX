@@ -83,9 +83,9 @@ def initialize_user():
         db.create_new_user(username=username, name=name, password=passwd)
         print("done creating")
         session['username'] = username
-        return redirect('/u/{}'.format(username))
         ## Make Recommendations and Cache In Database
-        # _ = db.initialize_user_recommendations(username)
+        db.initialize_user_recommendations(username)
+        return redirect('/u/{}'.format(username))
 
 @app.route('/api/stacked_area', methods=['POST'])
 def stacked_area_data():
