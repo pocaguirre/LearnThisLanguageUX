@@ -353,7 +353,10 @@ body {
   font-size: 14px;
   padding: 15px 20px 5px 20px;
   display: inline-block;
+  min-width:100%;
+  background: linear-gradient(180deg, #0011fa00 0%, #9405006b 100%);
 }
+
 
 .sidebar-wrapper .sidebar-menu ul li a {
   display: inline-block;
@@ -560,7 +563,7 @@ body {
 
 /*-----------------------------chiller-theme-------------------------------------------------*/
 .chiller-theme .sidebar-wrapper {
-  background: linear-gradient(0deg, #0011fa 0%, #ff3b29 100%);
+  background: linear-gradient(0deg, #0063a7 0%, #940500 100%);
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
@@ -627,9 +630,9 @@ body {
 }
 
 .chiller-theme .sidebar-footer {
-    background: #ff3b29;
-    box-shadow: 0px -1px 5px #bd2130;
-    border-top: 1px solid #bd2130;
+    background: #940500;
+    box-shadow: 0px -1px 5px #bd2130b5;
+    border-top: 1px solid #bd2130b5;
 }
 
 .chiller-theme .sidebar-footer>a:first-child {
