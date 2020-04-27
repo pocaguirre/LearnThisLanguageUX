@@ -62,7 +62,7 @@ header.masthead {
   overflow: hidden;
   padding-top: calc(7rem + 72px);
   padding-bottom: 7rem;
-  background: linear-gradient(0deg, #0063a7 0%, #940500 100%);
+  background: linear-gradient(0deg, #000428 0%, #004e92 100%);
   background-repeat: no-repeat;
   background-position: center center;
   background-attachment: scroll;
@@ -71,7 +71,7 @@ header.masthead {
 
 .separator {
   min-height: 1rem;
-  background: linear-gradient(45deg, #0063a7 0%, #940500 100%);
+  background: linear-gradient(90deg, #000428 0%, #004e92 100%);
   margin-bottom: 5rem;
 }
 
@@ -92,7 +92,7 @@ header.masthead .bg-circle {
   z-index: 0;
   position: absolute;
   border-radius: 100%;
-  background: linear-gradient(0deg, #0063a7 0%, #940500 100%);
+  background: linear-gradient(0deg, #000428 0%, #004e92 100%);
 }
 
 header.masthead .bg-circle-1 {
@@ -137,35 +137,34 @@ header.masthead .bg-circle-4 {
 }
 
 .bg-primary {
-  background-color: #940500 !important;
+  background-color: #004e92 !important;
 }
 
 .btn-primary {
-  background-color: #940500;
-  border-color: #940500;
+  background-color: #004e92;
+  border-color: #004e92;
 }
 
 .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
-  background-color: #660600 !important;
-  border-color: #660600 !important;
+  background-color: #003b6f !important;
+  border-color: #003d72 !important;
 }
 
 .btn-primary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(215, 17, 0, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(0, 61, 114, 0.5);
 }
-
 .btn-secondary {
-  background-color: #006fba;
-  border-color: #006fba;
+  background-color: #000428;
+  border-color: #000428;
 }
 
 .btn-secondary:active, .btn-secondary:focus, .btn-secondary:hover {
-  background-color: #3d07b3 !important;
-  border-color: #3d07b3 !important;
+  background-color: #000463 !important;
+  border-color: #000463 !important;
 }
 
 .btn-secondary:focus {
-  box-shadow: 0 0 0 0.2rem rgba(53, 3, 161, 0.5);
+  box-shadow: 0 0 0 0.2rem rgba(9, 0, 29, 0.5);
 }
 
 .bottom-section {
