@@ -342,6 +342,10 @@ body {
 .sidebar-wrapper .sidebar-search > div {
   padding: 10px 20px;
 }
+.sidebar-search{
+  padding-left: 10px;
+  padding-right: 10px;
+}
 
 /*----------------------sidebar-menu-------------------------*/
 
